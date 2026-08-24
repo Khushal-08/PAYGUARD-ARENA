@@ -1,131 +1,52 @@
-import React, { useState, useEffect } from 'react';
+import { useMemo, useState } from 'react';
 import { demoData, mockTransactions } from './mockData';
 
-// --- Components ---
+const rounds = [
+  { id: 1, label: 'ATTACK LAUNCH', title: 'Baseline attack enters the arena', detail: 'Synthetic fraud campaign deployed against the defense model.', rate: demoData.round_1_detection_rate, caught: demoData.round_1_caught, total: demoData.round_1_total, amount: demoData.round_1_avg_amt, tone: 'cyan' },
+  { id: 2, label: 'ADAPTIVE EVASION', title: 'Attacker learns from the signal', detail: 'Campaign mutates its timing, velocity, and spend profile.', rate: demoData.round_2_detection_rate, caught: demoData.round_2_caught, total: demoData.round_2_total, amount: demoData.round_2_avg_amt, tone: 'alert' },
+  { id: 3, label: 'DEFENSE RETRAIN', title: 'Model closes the escape route', detail: 'Retrained classifier restores detection against the evolved campaign.', rate: demoData.round_3_detection_rate, caught: demoData.round_3_caught, total: demoData.round_3_total, amount: demoData.round_3_avg_amt, tone: 'green' },
+];
 
-const DefenseModelStats = ({ data }) => {
-  return (
-    <div className="glass-card flex-col animate-slide-in">
-      <h3 className="mb-4 text-gradient-primary font-bold">XGBClassifier (Defense Model)</h3>
-      <div className="dashboard-grid">
-        <div className="glass-panel">
-          <div className="text-muted text-sm mb-2">Baseline FPR</div>
-          <div className="font-bold" style={{ fontSize: '1.5rem' }}>{(data.round_0_model_fpr * 100).toFixed(2)}%</div>
-          <div className="text-muted text-sm mt-2">{data.round_0_model_fp_count} false positives</div>
-        </div>
-        <div className="glass-panel">
-          <div className="text-muted text-sm mb-2">Round 1 Detection Rate</div>
-          <div className="font-bold text-gradient-primary" style={{ fontSize: '1.5rem' }}>{(data.round_1_detection_rate * 100).toFixed(1)}%</div>
-          <div className="text-muted text-sm mt-2">{data.round_1_caught} / {data.round_1_total} caught</div>
-        </div>
-        <div className="glass-panel">
-          <div className="text-muted text-sm mb-2">Round 2 Detection Rate</div>
-          <div className="font-bold text-gradient-accent" style={{ fontSize: '1.5rem' }}>{(data.round_2_detection_rate * 100).toFixed(1)}%</div>
-          <div className="text-muted text-sm mt-2">{data.round_2_caught} / {data.round_2_total} caught</div>
-        </div>
-      </div>
+function Metric({ label, value, sub, tone = '' }) {
+  return <div className="metric"><span className="eyebrow">{label}</span><strong className={tone}>{value}</strong><span className="muted mono">{sub}</span></div>;
+}
+
+function RoundTimeline({ selected, setSelected }) {
+  return <section className="timeline panel-gridline" aria-label="Adversarial cycle rounds">
+    <div className="section-head"><div><span className="eyebrow">OPERATIONAL TIMELINE / LIVE</span><h2>Adversarial cycle</h2></div><span className="live"><i /> STREAMING</span></div>
+    <div className="round-track">
+      {rounds.map((round, index) => <div className={`round-wrap ${index < rounds.length - 1 ? 'has-link' : ''}`} key={round.id}>
+        <button className={`round-node ${round.tone} ${selected === round.id ? 'selected' : ''}`} onClick={() => setSelected(round.id)} aria-pressed={selected === round.id}>
+          <span className="round-number">0{round.id}</span><span className="eyebrow">{round.label}</span><strong>{round.title}</strong><span className="muted">{round.detail}</span>
+          <span className="round-result"><b>{(round.rate * 100).toFixed(1)}%</b><span>DETECTION</span></span>
+          <span className="round-foot mono">{round.caught}/{round.total} intercepted <em>·</em> avg ${round.amount.toFixed(2)}</span>
+        </button>
+      </div>)}
     </div>
-  );
-};
+  </section>;
+}
 
-const SHAPAnalysisWidget = ({ data }) => {
-  const maxScore = data.shap_explanation[0][1];
-  return (
-    <div className="glass-card animate-slide-in" style={{ animationDelay: '0.1s' }}>
-      <h3 className="mb-4 font-bold">Feature Importance (SHAP)</h3>
-      <div className="flex-col gap-4">
-        {data.shap_explanation.map(([feature, score], idx) => (
-          <div key={feature} className="flex-col gap-2">
-            <div className="flex justify-between text-sm">
-              <span style={{ fontFamily: 'monospace' }}>{feature}</span>
-              <span className="text-primary font-bold">{score.toFixed(2)}</span>
-            </div>
-            <div style={{ width: '100%', height: '6px', background: 'rgba(255,255,255,0.1)', borderRadius: '3px', overflow: 'hidden' }}>
-              <div style={{ 
-                width: `${(score / maxScore) * 100}%`, 
-                height: '100%', 
-                background: idx === 0 ? 'var(--primary)' : 'var(--text-muted)' 
-              }} />
-            </div>
-          </div>
-        ))}
-      </div>
-      <div className="mt-4 p-4 glass-panel text-sm text-muted" style={{ borderLeft: '3px solid var(--accent)' }}>
-        <strong>LLM Strategy:</strong> {data.llm_reasoning}
-      </div>
-    </div>
-  );
-};
+function Reasoning({ selected }) {
+  return <section className="panel reasoning"><div className="section-head"><div><span className="eyebrow">ADVERSARY INTELLIGENCE</span><h2>Observed reasoning</h2></div><span className="tag alert">LLM TRACE / VERBATIM</span></div><p className="quote">“{demoData.llm_reasoning}”</p><div className="signal-row"><span className="eyebrow">CURRENT SIGNAL</span><b>ROUND 0{selected} / {rounds[selected - 1].label}</b></div></section>;
+}
 
-const AttackFeed = ({ transactions }) => {
-  return (
-    <div className="glass-card flex-col animate-slide-in" style={{ animationDelay: '0.2s', height: '100%' }}>
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="font-bold">Live Simulation Feed</h3>
-        <div className="pulse-indicator" style={{ width: 8, height: 8, background: 'var(--accent)', borderRadius: '50%', animation: 'pulseGlow 2s infinite' }}></div>
-      </div>
-      <div className="flex-col gap-2" style={{ overflowY: 'auto', flex: 1, maxHeight: '500px' }}>
-        {transactions.map(tx => (
-          <div key={tx.id} className="glass-panel flex justify-between items-center" style={{ padding: '12px 16px' }}>
-            <div className="flex-col gap-2">
-              <div className="flex items-center gap-4">
-                <span className="font-bold text-sm">{tx.time}</span>
-                <span className="text-sm" style={{ color: tx.attackType === 'Legitimate' ? 'var(--text-muted)' : 'var(--accent)' }}>{tx.attackType}</span>
-              </div>
-              <div style={{ fontFamily: 'monospace', fontSize: '1.1rem' }}>${tx.amount.toFixed(2)}</div>
-              {tx.reason && <div className="text-muted text-sm mt-1">{tx.reason}</div>}
-            </div>
-            {tx.status && (
-              <div className={`status-badge ${tx.status === 'caught' ? 'status-caught' : 'status-missed'}`}>
-                {tx.status}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
+function ShapPanel() {
+  const max = demoData.shap_explanation[0][1];
+  return <section className="panel"><div className="section-head"><div><span className="eyebrow">DEFENSE MODEL EVIDENCE</span><h2>SHAP pressure map</h2></div><span className="mono muted">XGB / FEATURES</span></div><div className="shap-list">{demoData.shap_explanation.map(([name, score], index) => <div className="shap" key={name}><div><span className="mono">{name}</span><b className="mono">{score.toFixed(2)}</b></div><div className="bar"><i style={{ width: `${score / max * 100}%`, opacity: 1 - index * 0.12 }} /></div></div>)}</div></section>;
+}
 
-// --- Layouts & Pages ---
+function CampaignTrace() {
+  return <section className="panel trace"><div className="section-head"><div><span className="eyebrow">CAMPAIGN TRACE</span><h2>Mutation parameters</h2></div><span className="tag alert">MUTATED</span></div><div className="trace-grid">{Object.entries(demoData.mutated_params).map(([key, value]) => <div key={key}><span className="eyebrow">{key}</span><b className="mono">{value}</b></div>)}</div></section>;
+}
 
-const ArenaView = () => {
-  return (
-    <div className="flex-col gap-4">
-      <header>
-        <div>
-          <h1 className="text-gradient-primary">PAYGUARD-ARENA</h1>
-          <p className="text-muted mt-2">Active Simulation: Round 3 (Adaptive Evasion)</p>
-        </div>
-      </header>
-      
-      <DefenseModelStats data={demoData} />
-      
-      <div className="arena-grid mt-4">
-        <AttackFeed transactions={mockTransactions} />
-        <SHAPAnalysisWidget data={demoData} />
-      </div>
-    </div>
-  );
-};
+function EventFeed() {
+  return <section className="panel feed"><div className="section-head"><div><span className="eyebrow">PACKET MONITOR / 10:14:22</span><h2>Live interception feed</h2></div><span className="live"><i /> LIVE</span></div><div className="events">{mockTransactions.map(tx => <div className="event" key={tx.id}><span className="mono muted">{tx.time}</span><div><b>{tx.attackType}</b><span className="muted">{tx.reason || 'Normal transaction profile'}</span></div><strong className={`event-status ${tx.status}`}>{tx.status}</strong><span className="mono amount">${tx.amount.toFixed(2)}</span></div>)}</div></section>;
+}
 
-const App = () => {
-  return (
-    <div className="app-container">
-      <nav className="sidebar">
-        <h2 className="font-bold" style={{ fontSize: '1.2rem', letterSpacing: '2px' }}>PG::ARENA</h2>
-        <div className="flex-col gap-4 mt-4 text-sm">
-          <div className="text-primary font-bold cursor-pointer hover:opacity-80">⚔️ Battle View</div>
-          <div className="text-muted cursor-pointer hover:text-main transition-colors">📊 Model Metrics</div>
-          <div className="text-muted cursor-pointer hover:text-main transition-colors">🤖 GenAI Agents</div>
-          <div className="text-muted cursor-pointer hover:text-main transition-colors">⚙️ Settings</div>
-        </div>
-      </nav>
-      <main className="main-content">
-        <ArenaView />
-      </main>
-    </div>
-  );
-};
+function App() {
+  const [selected, setSelected] = useState(3);
+  const current = useMemo(() => rounds[selected - 1], [selected]);
+  return <div className="console"><aside className="rail"><div className="brand"><span>PG</span><b>ARENA</b></div><div className="rail-status"><i /><span>CONSOLE<br />ONLINE</span></div><nav><button className="active"><span>01</span>Battle View</button><button><span>02</span>Model Metrics</button><button><span>03</span>GenAI Agents</button><button><span>04</span>Settings</button></nav><div className="rail-footer mono">MASTERCARD<br />ADVERSARIAL LAB<br /><small>BUILD 0.9.4 / SECURE</small></div></aside><main className="main"><header className="topbar"><div><span className="eyebrow">MISSION CONTROL / ARENA-07</span><h1>PAYGUARD <em>//</em> BATTLE VIEW</h1></div><div className="top-meta"><span className="tag green">SIMULATION ACTIVE</span><span className="mono muted">AUG 24, 2026 / 10:14:22 UTC</span></div></header><div className="alert-strip"><span className="alert-mark">!</span><b>ADVERSARIAL CYCLE IN PROGRESS</b><span className="muted">Attacker adaptation detected · Defense response deployed</span><span className="strip-round mono">ROUND 0{selected} / 03</span></div><section className="hero-stats"><Metric label="CURRENT DETECTION" value={`${(current.rate * 100).toFixed(1)}%`} sub={`${current.caught} / ${current.total} intercepted`} tone={current.tone} /><Metric label="DELTA VS BASELINE" value={`${((current.rate - demoData.round_1_detection_rate) * 100).toFixed(1)}%`} sub="detection recovery" tone="green" /><Metric label="CAMPAIGN AVG VALUE" value={`$${current.amount.toFixed(2)}`} sub="fraud transaction amount" /><Metric label="MODEL FPR / ROUND 1" value={`${(demoData.round_1_model_fpr * 100).toFixed(2)}%`} sub={`${demoData.round_1_model_fp_count} false positives`} /></section><RoundTimeline selected={selected} setSelected={setSelected} /><div className="lower-grid"><div className="stack"><Reasoning selected={selected} /><EventFeed /></div><div className="stack"><ShapPanel /><CampaignTrace /></div></div></main></div>;
+}
 
 export default App;

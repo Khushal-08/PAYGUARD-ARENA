@@ -1,3 +1,4 @@
+// TEMPORARY_MOCK_DATA: mirrors the trimmed demo payload for UI development only. Replace with GET /arena/round/{n} from FastAPI (SPEC.md §13).
 export const demoData = {
   "round_1_detection_rate": 0.989010989010989,
   "round_1_caught": 90,
