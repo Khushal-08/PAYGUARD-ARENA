@@ -1,0 +1,8 @@
+- `[x]` Create docs/REFERENCES.md
+- `[x]` Implement simulation/state/entities.py (Pydantic models)
+- `[x]` Implement simulation/state/environment.py (State management engine)
+- `[x]` Implement simulation/state/baseline_generator.py (Poisson process event generator)
+- `[x]` Implement simulation/run_baseline.py (Simulation entry point)
+- `[x]` Implement ml/features/entity_aggregates.py (Feature engineering based on IEEE-CIS patterns)
+- `[x]` Implement ml/evaluation/time_consistency.py (Time consistency checks)
+- `[x]` Update evaluation harness to support multiple temporal validation splits

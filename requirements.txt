@@ -1,0 +1,6 @@
+pandas==3.0.3
+xgboost==3.2.0
+scikit-learn==1.8.0
+pydantic==2.12.5
+networkx==3.6.1
+shap==0.51.0
