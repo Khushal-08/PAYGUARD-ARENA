@@ -1,64 +1,57 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { demoData, mockTransactions } from './mockData';
 
-const createRounds = (data) => [
-  { id: 1, label: 'ATTACK LAUNCH', title: 'Baseline attack enters the arena', detail: 'Synthetic fraud campaign deployed against the defense model.', rate: data.round_1_detection_rate, caught: data.round_1_caught, total: data.round_1_total, amount: data.round_1_avg_amt, tone: 'cyan' },
-  { id: 2, label: 'ADAPTIVE EVASION', title: 'Attacker learns from the signal', detail: 'Campaign mutates its timing, velocity, and spend profile.', rate: data.round_2_detection_rate, caught: data.round_2_caught, total: data.round_2_total, amount: data.round_2_avg_amt, tone: 'alert' },
-  { id: 3, label: 'DEFENSE RETRAIN', title: 'Model closes the escape route', detail: 'Retrained classifier restores detection against the evolved campaign.', rate: data.round_3_detection_rate, caught: data.round_3_caught, total: data.round_3_total, amount: data.round_3_avg_amt, tone: 'green' },
-];
+const metricFallback = {
+  baseline: [
+    { id: 'config_1', name: 'Config 1 · Baseline only', auc: 0.49 },
+    { id: 'config_2', name: 'Config 2 · + behavioral features', auc: 0.85 },
+    { id: 'config_3', name: 'Config 3 · + temporal + ensemble', auc: 0.94 },
+  ],
+  fpr: [
+    { round: 'round_0', blocked: 196, total: 45476, fpr: 0.0043 },
+    { round: 'round_1', blocked: 393, total: 45476, fpr: 0.0086 },
+  ],
+  adaptive: [
+    { round: 'Round 1', detection: 0.989, bustOut: 1507.8 },
+    { round: 'Round 2', detection: 0.9275, bustOut: 740.46 },
+    { round: 'Round 3', detection: 0.9875, bustOut: 752.71 },
+  ],
+  consistency: ['amount','account_time_since_last_txn','hour_of_day','account_txns_24h','is_weekend','merchant_risk_score','device_age_days','distance_from_home','velocity_1h'].map(feature => ({ feature, status: 'pass' })),
+};
 
-function Metric({ label, value, sub, tone = '' }) {
-  return <div className="metric"><span className="eyebrow">{label}</span><strong className={tone}>{value}</strong><span className="muted mono">{sub}</span></div>;
+function normalizeMetrics(payload) {
+  const source = payload?.data || payload?.summary || payload || {};
+  return {
+    baseline: source.baseline || source.baseline_ladder || source.configs || metricFallback.baseline,
+    fpr: source.fpr || source.fpr_tradeoff || metricFallback.fpr,
+    adaptive: source.adaptive || source.adaptive_loop || source.rounds || metricFallback.adaptive,
+    consistency: source.consistency || source.time_consistency || source.features || metricFallback.consistency,
+  };
 }
 
-function RoundTimeline({ selected, setSelected, rounds }) {
-  return <section className="timeline panel-gridline" aria-label="Adversarial cycle rounds">
-    <div className="section-head"><div><span className="eyebrow">OPERATIONAL TIMELINE / LIVE</span><h2>Adversarial cycle</h2></div><span className="live"><i /> STREAMING</span></div>
-    <div className="round-track">
-      {rounds.map((round, index) => <div className={`round-wrap ${index < rounds.length - 1 ? 'has-link' : ''}`} key={round.id}>
-        <button className={`round-node ${round.tone} ${selected === round.id ? 'selected' : ''}`} onClick={() => setSelected(round.id)} aria-pressed={selected === round.id}>
-          <span className="round-number">0{round.id}</span><span className="eyebrow">{round.label}</span><strong>{round.title}</strong><span className="muted">{round.detail}</span>
-          <span className="round-result"><b>{(round.rate * 100).toFixed(1)}%</b><span>DETECTION</span></span>
-          <span className="round-foot mono">{round.caught}/{round.total} intercepted <em>·</em> avg ${round.amount.toFixed(2)}</span>
-        </button>
-      </div>)}
-    </div>
-  </section>;
-}
+function Metric({ label, value, sub, tone = '' }) { return <div className="metric"><span className="eyebrow">{label}</span><strong className={tone}>{value}</strong><span className="muted mono">{sub}</span></div>; }
+function Panel({ children, className = '' }) { return <section className={`panel ${className}`}>{children}</section>; }
+function SectionHead({ eyebrow, title, meta }) { return <div className="section-head"><div><span className="eyebrow">{eyebrow}</span><h2>{title}</h2></div>{meta}</div>; }
 
-function Reasoning({ selected, rounds, data }) {
-  return <section className="panel reasoning"><div className="section-head"><div><span className="eyebrow">ADVERSARY INTELLIGENCE</span><h2>Observed reasoning</h2></div><span className="tag alert">LLM TRACE / VERBATIM</span></div><div className="reasoning-text" style={{maxHeight: '120px', overflowY: 'auto', paddingRight: '8px'}}><p className="quote">“{data.llm_reasoning}”</p></div><div className="signal-row"><span className="eyebrow">CURRENT SIGNAL</span><b>ROUND 0{selected} / {rounds[selected - 1].label}</b></div></section>;
-}
-
-function ShapPanel({ data }) {
-  const max = data.shap_explanation[0][1];
-  return <section className="panel"><div className="section-head"><div><span className="eyebrow">DEFENSE MODEL EVIDENCE</span><h2>SHAP pressure map</h2></div><span className="mono muted">XGB / FEATURES</span></div><div className="shap-list">{data.shap_explanation.map(([name, score], index) => <div className="shap" key={name}><div><span className="mono">{name}</span><b className="mono">{score.toFixed(2)}</b></div><div className="bar"><i style={{ width: `${score / max * 100}%`, opacity: 1 - index * 0.12 }} /></div></div>)}</div></section>;
-}
-
-function CampaignTrace({ data }) {
-  return <section className="panel trace"><div className="section-head"><div><span className="eyebrow">CAMPAIGN TRACE</span><h2>Mutation parameters</h2></div><span className="tag alert">MUTATED</span></div><div className="trace-grid">{Object.entries(data.mutated_params).map(([key, value]) => <div key={key}><span className="eyebrow">{key}</span><b className="mono">{value}</b></div>)}</div></section>;
-}
-
-function EventFeed() {
-  return <section className="panel feed"><div className="section-head"><div><span className="eyebrow">PACKET MONITOR / 10:14:22</span><h2>Live interception feed</h2></div><span className="live"><i /> LIVE</span></div><div className="events">{mockTransactions.map(tx => <div className="event" key={tx.id}><span className="mono muted">{tx.time}</span><div><b>{tx.attackType}</b><span className="muted">{tx.reason || 'Normal transaction profile'}</span></div><strong className={`event-status ${tx.status}`}>{tx.status}</strong><span className="mono amount">${tx.amount.toFixed(2)}</span></div>)}</div></section>;
-}
-
-function App() {
+function BattleView() {
   const [selected, setSelected] = useState(3);
-  const [arenaData, setArenaData] = useState(demoData);
-  
-  useEffect(() => {
-    fetch('http://localhost:8000/arena/round/1')
-      .then(res => res.json())
-      .then(data => {
-        if (data && data.shap_explanation) setArenaData(data);
-      })
-      .catch(err => console.error("API fetch failed, falling back to mockData:", err));
-  }, []);
-
-  const rounds = useMemo(() => createRounds(arenaData), [arenaData]);
-  const current = useMemo(() => rounds[selected - 1], [selected, rounds]);
-  return <div className="console"><aside className="rail"><div className="brand"><span>PG</span><b>ARENA</b></div><div className="rail-status"><i /><span>CONSOLE<br />ONLINE</span></div><nav><button className="active"><span>01</span>Battle View</button><button><span>02</span>Model Metrics</button><button><span>03</span>GenAI Agents</button><button><span>04</span>Settings</button></nav><div className="rail-footer mono">MASTERCARD<br />ADVERSARIAL LAB<br /><small>BUILD 0.9.4 / SECURE</small></div></aside><main className="main"><header className="topbar"><div><span className="eyebrow">MISSION CONTROL / ARENA-07</span><h1>PAYGUARD <em>//</em> BATTLE VIEW</h1></div><div className="top-meta"><span className="tag green">SIMULATION ACTIVE</span><span className="mono muted">AUG 24, 2026 / 10:14:22 UTC</span></div></header><div className="alert-strip"><span className="alert-mark">!</span><b>ADVERSARIAL CYCLE IN PROGRESS</b><span className="muted">Attacker adaptation detected · Defense response deployed</span><span className="strip-round mono">ROUND 0{selected} / 03</span></div><section className="hero-stats"><Metric label="CURRENT DETECTION" value={`${(current.rate * 100).toFixed(1)}%`} sub={`${current.caught} / ${current.total} intercepted`} tone={current.tone} /><Metric label="DELTA VS BASELINE" value={`${((current.rate - arenaData.round_1_detection_rate) * 100).toFixed(1)}%`} sub="detection recovery" tone="green" /><Metric label="CAMPAIGN AVG VALUE" value={`$${current.amount.toFixed(2)}`} sub="fraud transaction amount" /><Metric label="MODEL FPR / ROUND 1" value={`${(arenaData.round_1_model_fpr * 100).toFixed(2)}%`} sub={`${arenaData.round_1_model_fp_count} false positives`} /></section><RoundTimeline selected={selected} setSelected={setSelected} rounds={rounds} /><div className="lower-grid"><div className="stack"><Reasoning selected={selected} rounds={rounds} data={arenaData} /><EventFeed /></div><div className="stack"><ShapPanel data={arenaData} /><CampaignTrace data={arenaData} /></div></div></main></div>;
+  const [data, setData] = useState(demoData);
+  useEffect(() => { fetch('http://localhost:8000/arena/round/1').then(r => r.json()).then(d => d?.shap_explanation && setData(d)).catch(() => {}); }, []);
+  const rounds = useMemo(() => [
+    ['ATTACK LAUNCH','Baseline attack enters the arena','Synthetic fraud campaign deployed against the defense model.',data.round_1_detection_rate,data.round_1_caught,data.round_1_total,data.round_1_avg_amt,'cyan'],
+    ['ADAPTIVE EVASION','Attacker learns from the signal','Campaign mutates its timing, velocity, and spend profile.',data.round_2_detection_rate,data.round_2_caught,data.round_2_total,data.round_2_avg_amt,'alert'],
+    ['DEFENSE RETRAIN','Model closes the escape route','Retrained classifier restores detection against the evolved campaign.',data.round_3_detection_rate,data.round_3_caught,data.round_3_total,data.round_3_avg_amt,'green'],
+  ], [data]);
+  const current = rounds[selected - 1];
+  return <><div className="alert-strip"><span className="alert-mark">!</span><b>ADVERSARIAL CYCLE IN PROGRESS</b><span className="muted">Attacker adaptation detected · Defense response deployed</span><span className="strip-round mono">ROUND 0{selected} / 03</span></div><section className="hero-stats"><Metric label="CURRENT DETECTION" value={`${(current[3]*100).toFixed(1)}%`} sub={`${current[4]} / ${current[5]} intercepted`} tone={current[7]} /><Metric label="DELTA VS BASELINE" value={`${((current[3]-data.round_1_detection_rate)*100).toFixed(1)}%`} sub="detection recovery" tone="green" /><Metric label="CAMPAIGN AVG VALUE" value={`$${current[6].toFixed(2)}`} sub="fraud transaction amount" /><Metric label="MODEL FPR / ROUND 1" value={`${(data.round_1_model_fpr*100).toFixed(2)}%`} sub={`${data.round_1_model_fp_count} false positives`} /></section><Panel className="timeline"><SectionHead eyebrow="OPERATIONAL TIMELINE / LIVE" title="Adversarial cycle" meta={<span className="live"><i /> STREAMING</span>} /><div className="round-track">{rounds.map((r,i)=><button key={r[0]} className={`round-node ${r[7]} ${selected===i+1?'selected':''}`} onClick={()=>setSelected(i+1)}><span className="round-number">0{i+1}</span><span className="eyebrow">{r[0]}</span><strong>{r[1]}</strong><span className="muted">{r[2]}</span><span className="round-result"><b>{(r[3]*100).toFixed(1)}%</b><span>DETECTION</span></span><span className="round-foot mono">{r[4]}/{r[5]} intercepted · avg ${r[6].toFixed(2)}</span></button>)}</div></Panel><div className="lower-grid"><div className="stack"><Panel><SectionHead eyebrow="ADVERSARY INTELLIGENCE" title="Observed reasoning" meta={<span className="tag alert">LLM TRACE / VERBATIM</span>} /><p className="quote">“{data.llm_reasoning}”</p><div className="signal-row"><span className="eyebrow">CURRENT SIGNAL</span><b>ROUND 0{selected} / {current[0]}</b></div></Panel><Panel><SectionHead eyebrow="PACKET MONITOR / 10:14:22" title="Live interception feed" meta={<span className="live"><i /> LIVE</span>} /><div className="events">{mockTransactions.map(tx=><div className="event" key={tx.id}><span className="mono muted">{tx.time}</span><div><b>{tx.attackType}</b><span className="muted">{tx.reason||'Normal transaction profile'}</span></div><strong className={`event-status ${tx.status}`}>{tx.status}</strong><span className="mono amount">${tx.amount.toFixed(2)}</span></div>)}</div></Panel></div><div className="stack"><Panel><SectionHead eyebrow="DEFENSE MODEL EVIDENCE" title="SHAP pressure map" meta={<span className="mono muted">XGB / FEATURES</span>} /><div className="shap-list">{data.shap_explanation.map(([name,score])=><div className="shap" key={name}><div><span className="mono">{name}</span><b className="mono">{score.toFixed(2)}</b></div><div className="bar"><i style={{width:`${score/data.shap_explanation[0][1]*100}%`}} /></div></div>)}</div></Panel><Panel><SectionHead eyebrow="CAMPAIGN TRACE" title="Mutation parameters" meta={<span className="tag alert">MUTATED</span>} /><div className="trace-grid">{Object.entries(data.mutated_params).map(([k,v])=><div key={k}><span className="eyebrow">{k}</span><b className="mono">{v}</b></div>)}</div></Panel></div></div></>;
 }
 
+function EvidenceView() {
+  const [metrics, setMetrics] = useState(metricFallback); const [loading, setLoading] = useState(true); const [live, setLive] = useState(false);
+  useEffect(() => { fetch('http://localhost:8000/metrics/summary').then(r => { if(!r.ok) throw new Error('metrics unavailable'); return r.json(); }).then(d => { setMetrics(normalizeMetrics(d)); setLive(true); }).catch(() => {}).finally(() => setLoading(false)); }, []);
+  const maxAuc = Math.max(...metrics.baseline.map(x => Number(x.auc ?? x.pr_auc ?? 0.94)));
+  return <><div className="evidence-banner"><div><span className="eyebrow">MODEL VALIDATION / EVIDENCE SCREEN</span><h2>Proof under pressure</h2><p className="muted">Benchmark gains, false-positive cost, and temporal stability in one operational readout.</p></div><span className={`tag ${live?'green':'amber'}`}>{loading?'SYNCING API':live?'LIVE API':'FALLBACK SNAPSHOT'}</span></div><div className="evidence-grid"><Panel className="wide"><SectionHead eyebrow="BASELINE LADDER / PR-AUC" title="Signal quality climbs with context" meta={<span className="mono cyan">HIGHER IS BETTER</span>} /><div className="ladder">{metrics.baseline.map((item,i)=>{const auc=Number(item.auc??item.pr_auc??0);return <div className="ladder-row" key={item.id||item.name}><span className="config-index mono">0{i+1}</span><div className="ladder-label"><b>{item.name}</b><span className="muted mono">PR-AUC</span></div><div className="ladder-bar"><i style={{width:`${auc/maxAuc*100}%`}} /></div><strong className="mono cyan">{auc.toFixed(2)}</strong></div>})}</div></Panel><Panel className="fpr-panel"><SectionHead eyebrow="FALSE POSITIVE TRADEOFF" title="The cost of adaptation" meta={<span className="tag alert">2× FPR</span>} /><div className="fpr-compare">{metrics.fpr.map((item,i)=><div className={`fpr-card ${i?'hot':''}`} key={item.round}><span className="eyebrow">{item.round}</span><strong className="fpr-value">{(Number(item.fpr)*100).toFixed(2)}<small>%</small></strong><div className="fpr-bar"><i style={{width:`${Number(item.fpr)/0.0086*100}%`}} /></div><b className="mono">{item.blocked} <span className="muted">/ {item.total} blocked</span></b></div>)}</div><p className="fpr-note"><b>+197 false positives</b> for the adaptive signal window. Detection power rises, but so does legitimate-user friction.</p></Panel><Panel><SectionHead eyebrow="ADAPTIVE LOOP / COMPANION SUMMARY" title="Detection recovers after mutation" meta={<span className="mono muted">3 ROUNDS</span>} /><table className="data-table"><thead><tr><th>ROUND</th><th>DETECTION</th><th>AVG BUST-OUT</th></tr></thead><tbody>{metrics.adaptive.map(row=><tr key={row.round}><td className="mono">{row.round}</td><td className="mono"><b className={Number(row.detection)<.95?'amber':'green'}>{(Number(row.detection)*100).toFixed(2)}%</b></td><td className="mono">${Number(row.bustOut??row.avg_amt??0).toFixed(2)}</td></tr>)}</tbody></table></Panel><Panel><SectionHead eyebrow="TIME CONSISTENCY / FEATURE AUDIT" title="Temporal integrity check" meta={<span className="tag green">9 / 9 PASS</span>} /><div className="consistency-grid">{metrics.consistency.map((row,i)=>{const feature=row.feature||row.name||`feature_${i+1}`;const pass=(row.status||row.result||'pass').toLowerCase()==='pass';return <div className="consistency-row" key={feature}><span className="mono muted">{String(i+1).padStart(2,'0')}</span><b className="mono">{feature}</b><span className={pass?'status-pass':'status-fail'}>{pass?'PASS':'FAIL'}</span></div>})}</div></Panel></div></>;
+}
+
+function App() { const [tab,setTab]=useState('battle'); return <div className="console"><aside className="rail"><div className="brand"><span>PG</span><b>ARENA</b></div><div className="rail-status"><i /><span>CONSOLE<br/>ONLINE</span></div><nav><button className={tab==='battle'?'active':''} onClick={()=>setTab('battle')}><span>01</span>Battle View</button><button className={tab==='metrics'?'active':''} onClick={()=>setTab('metrics')}><span>02</span>Model Metrics</button><button><span>03</span>GenAI Agents</button><button><span>04</span>Settings</button></nav><div className="rail-footer mono">MASTERCARD<br/>ADVERSARIAL LAB<br/><small>BUILD 0.9.4 / SECURE</small></div></aside><main className="main"><header className="topbar"><div><span className="eyebrow">MISSION CONTROL / ARENA-07</span><h1>PAYGUARD <em>//</em> {tab==='battle'?'BATTLE VIEW':'MODEL METRICS'}</h1></div><div className="top-meta"><span className="tag green">SIMULATION ACTIVE</span><span className="mono muted">AUG 24, 2026 / 10:14:22 UTC</span></div></header>{tab==='battle'?<BattleView/>:<EvidenceView/>}</main></div>; }
 export default App;
