@@ -1,3 +1,5 @@
+import os
+import json
 import pandas as pd
 import numpy as np
 from sklearn.metrics import roc_auc_score, precision_recall_curve, auc
@@ -148,9 +150,13 @@ def main():
     all_features = raw_features + agg_features
     
     print("\n--- 1. check_time_consistency() with Config 3 capacity ---")
-    top_features = ['amount', 'account_time_since_last_txn', 'account_txns_7d', 'is_familiar_merchant']
-    consistency_df = check_time_consistency_c3(df, 'is_fraud', top_features)
+    consistency_df = check_time_consistency_c3(df, 'is_fraud', all_features)
     print(consistency_df.to_string())
+    
+    # Dump time consistency results to JSON
+    consistency_json_path = "ml/data/time_consistency_results.json"
+    consistency_df.to_json(consistency_json_path, orient='records', indent=2)
+    print(f"Saved time consistency results to {consistency_json_path}")
     
     print("\n--- 2. evaluate_robustness_across_splits() with Config 3 capacity ---")
     robustness_df = evaluate_robustness_c3(df, 'is_fraud', all_features)

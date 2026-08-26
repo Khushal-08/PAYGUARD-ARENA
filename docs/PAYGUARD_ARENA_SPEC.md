@@ -214,6 +214,8 @@ Pre-compute and cache round outputs for the live demo — never depend on a live
 
 ## 14. Three-screen UI
 
+*(Note: The frontend code lives in the `dashboard/` directory, configured for Vercel deployment, not `/app/frontend` as previously planned.)*
+
 1. **Arena / Battle view** — round-by-round animation, including the actual LLM reasoning text behind each mutation (this is your proof of genuine adaptation, make it visible).
 2. **Transaction / Case view** — flagged transaction with SHAP explanation + campaign trace.
 3. **Evidence / Metrics dashboard** — baseline ladder + adversarial robustness metrics + ablation result.
