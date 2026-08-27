@@ -20,11 +20,7 @@ app = FastAPI(title="PayGuard Arena API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://payguard-arena-kxjk44094-kadamkhushal6-3619s-projects.vercel.app",
-        "http://localhost:3000",
-        "https://v0.app"
-    ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
