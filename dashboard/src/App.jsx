@@ -36,7 +36,7 @@ function SectionHead({ eyebrow, title, meta }) { return <div className="section-
 function BattleView() {
   const [selected, setSelected] = useState(3);
   const [data, setData] = useState(demoData);
-  useEffect(() => { fetch('http://localhost:8000/arena/round/1').then(r => r.json()).then(d => d?.shap_explanation && setData(d)).catch(() => {}); }, []);
+  useEffect(() => { fetch('https://payguard-api-8zso.onrender.com/arena/round/1').then(r => r.json()).then(d => d?.shap_explanation && setData(d)).catch(() => {}); }, []);
   const rounds = useMemo(() => [
     ['ATTACK LAUNCH','Baseline attack enters the arena','Synthetic fraud campaign deployed against the defense model.',data.round_1_detection_rate,data.round_1_caught,data.round_1_total,data.round_1_avg_amt,'cyan'],
     ['ADAPTIVE EVASION','Attacker learns from the signal','Campaign mutates its timing, velocity, and spend profile.',data.round_2_detection_rate,data.round_2_caught,data.round_2_total,data.round_2_avg_amt,'alert'],
@@ -49,7 +49,7 @@ function BattleView() {
 function EvidenceView() {
   const [metrics, setMetrics] = useState(metricFallback); const [loading, setLoading] = useState(true); const [live, setLive] = useState(false); const [fetchError, setFetchError] = useState('');
   useEffect(() => {
-    const endpoint = 'http://localhost:8000/metrics/summary';
+    const endpoint = 'https://payguard-api-8zso.onrender.com/metrics/summary';
     fetch(endpoint).then(r => { if (!r.ok) throw new Error(`HTTP ${r.status} ${r.statusText}`); return r.json(); }).then(d => { setMetrics(normalizeMetrics(d)); setLive(true); }).catch(error => { setFetchError(`${error.name === 'TypeError' ? 'Connection/CORS error' : error.message}. Endpoint: ${endpoint}`); }).finally(() => setLoading(false));
   }, []);
   const maxAuc = Math.max(...metrics.baseline.map(x => Number(x.auc ?? x.pr_auc ?? 0.94)));
