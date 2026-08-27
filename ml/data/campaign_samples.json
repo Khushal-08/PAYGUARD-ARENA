@@ -1,6 +1,6 @@
 [
   {
-    "campaign_id": "6f8e2ced-3c50-4384-993c-871f0a125d3e",
+    "campaign_id": "7415ca1c-48ce-44cf-853f-1712824c31db",
     "attack_type": "Synthetic Identity",
     "phase": "completed",
     "objective": "Build trust, then bust out",
@@ -70,21 +70,21 @@
     ],
     "shap_explanation": [
       [
-        "account_time_since_last_txn",
-        -6.012872695922852
-      ],
-      [
         "amount",
-        2.856281280517578
+        6.04219913482666
       ],
       [
-        "device_txns_7d",
-        1.6956013441085815
+        "account_time_since_last_txn",
+        1.154854416847229
+      ],
+      [
+        "account_txns_24h",
+        1.0763453245162964
       ]
     ]
   },
   {
-    "campaign_id": "f4e8d5c4-b758-40ae-b876-7bb0b0643f69",
+    "campaign_id": "66ae01a2-e970-42ee-bd70-6368d5919349",
     "attack_type": "Synthetic Identity",
     "phase": "completed",
     "objective": "Build trust, then bust out",
@@ -151,10 +151,24 @@
           "total_fraud_txns": 2
         }
       }
+    ],
+    "shap_explanation": [
+      [
+        "amount",
+        6.750360488891602
+      ],
+      [
+        "account_time_since_last_txn",
+        1.2951701879501343
+      ],
+      [
+        "device_txns_7d",
+        -0.691931962966919
+      ]
     ]
   },
   {
-    "campaign_id": "b0acc2b9-8aaf-4adf-8fdb-07379c9e19ee",
+    "campaign_id": "4b90e627-e973-4dae-81d8-43fe8777dd09",
     "attack_type": "Synthetic Identity",
     "phase": "completed",
     "objective": "Build trust, then bust out",
@@ -221,10 +235,24 @@
           "total_fraud_txns": 4
         }
       }
+    ],
+    "shap_explanation": [
+      [
+        "amount",
+        6.12052059173584
+      ],
+      [
+        "account_time_since_last_txn",
+        1.1464958190917969
+      ],
+      [
+        "device_txns_7d",
+        -1.0369527339935303
+      ]
     ]
   },
   {
-    "campaign_id": "07f939dc-1f5e-4a8c-bb55-ca90fd0bfdfd",
+    "campaign_id": "0d2d0622-c89c-4dc3-9b2e-1f056ae06a4f",
     "attack_type": "Account Takeover",
     "phase": "completed",
     "objective": "Hijack account and cash out",
@@ -236,7 +264,7 @@
         "phase": "baseline_established",
         "action": "observe_baseline",
         "parameters": {
-          "user_id": "3fa983c8-169e-4618-863b-7e365f1a2b3b"
+          "user_id": "86dee8f8-7a2a-4f62-b261-a9d10eec4af5"
         }
       },
       {
@@ -277,21 +305,21 @@
     ],
     "shap_explanation": [
       [
-        "account_time_since_last_txn",
-        -6.027276039123535
+        "amount",
+        6.492810249328613
       ],
       [
-        "amount",
-        2.9753923416137695
+        "account_txns_24h",
+        1.1074016094207764
       ],
       [
         "device_txns_7d",
-        1.6956013441085815
+        -0.4757096767425537
       ]
     ]
   },
   {
-    "campaign_id": "d26ff0d4-4c09-4d34-9a41-fbdfb797f500",
+    "campaign_id": "171f5552-00a7-47dd-b7d2-e70424aa7639",
     "attack_type": "Account Takeover",
     "phase": "completed",
     "objective": "Hijack account and cash out",
@@ -303,7 +331,7 @@
         "phase": "baseline_established",
         "action": "observe_baseline",
         "parameters": {
-          "user_id": "98e1a118-2ed5-4462-bdd7-04f8dd0c96bc"
+          "user_id": "e6c05a40-0093-480d-ba60-33a39ccfd60b"
         }
       },
       {
@@ -341,10 +369,24 @@
           "total_fraud_txns": 4
         }
       }
+    ],
+    "shap_explanation": [
+      [
+        "amount",
+        5.781981945037842
+      ],
+      [
+        "account_time_since_last_txn",
+        1.61055588722229
+      ],
+      [
+        "account_txns_24h",
+        0.3926033079624176
+      ]
     ]
   },
   {
-    "campaign_id": "53e5403b-aa78-4fa2-9d5c-fe85e80e5889",
+    "campaign_id": "2062f6ce-521d-4a4a-9534-9ec4233cb7b5",
     "attack_type": "Account Takeover",
     "phase": "completed",
     "objective": "Hijack account and cash out",
@@ -356,7 +398,7 @@
         "phase": "baseline_established",
         "action": "observe_baseline",
         "parameters": {
-          "user_id": "68505d8f-9be3-4ae9-a82f-f9a08a70b45d"
+          "user_id": "f9443420-b330-4f9c-860c-09200124e66e"
         }
       },
       {
@@ -394,10 +436,24 @@
           "total_fraud_txns": 7
         }
       }
+    ],
+    "shap_explanation": [
+      [
+        "amount",
+        6.136183261871338
+      ],
+      [
+        "account_time_since_last_txn",
+        1.2523971796035767
+      ],
+      [
+        "account_txns_24h",
+        1.0650357007980347
+      ]
     ]
   },
   {
-    "campaign_id": "04ad3c36-e191-4e89-9e14-8ddeb90b6461",
+    "campaign_id": "d13658e5-1201-4c5a-ba46-a197e70196ec",
     "attack_type": "GenAI Social Engineering",
     "phase": "completed",
     "objective": "Persuade victim to authorize out-of-pattern payment",
@@ -468,21 +524,21 @@
     ],
     "shap_explanation": [
       [
-        "account_time_since_last_txn",
-        -2.6556670665740967
+        "amount",
+        -3.6982715129852295
       ],
       [
         "device_txns_7d",
-        2.144040584564209
+        1.947338581085205
       ],
       [
-        "amount",
-        -1.9248067140579224
+        "account_txns_7d",
+        -0.8066206574440002
       ]
     ]
   },
   {
-    "campaign_id": "08e70897-4a2f-4b9a-903a-0fbe449f4454",
+    "campaign_id": "763d8839-1418-44f8-8b37-f7ca2a940f6d",
     "attack_type": "GenAI Social Engineering",
     "phase": "completed",
     "objective": "Persuade victim to authorize out-of-pattern payment",
@@ -543,7 +599,7 @@
     ]
   },
   {
-    "campaign_id": "9a2557da-3ca6-4475-b4f1-36c0c4f551d9",
+    "campaign_id": "7f24163a-2934-46ab-acc9-a1b946897da9",
     "attack_type": "GenAI Social Engineering",
     "phase": "completed",
     "objective": "Persuade victim to authorize out-of-pattern payment",

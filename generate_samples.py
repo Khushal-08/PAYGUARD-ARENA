@@ -45,19 +45,35 @@ def main():
     ]
         
     def get_shap(txn_obj):
-        txn_dict = txn_obj.model_dump()
-        row = {}
-        for f in features:
-            val = txn_dict.get(f)
-            if val is None or val == "":
-                if f == 'account_time_since_last_txn':
-                    row[f] = np.nan
-                elif f == 'is_new_account':
-                    row[f] = 1.0 if txn_dict.get('account_time_since_last_txn') in (None, "") else 0.0
-                else:
-                    row[f] = 0.0
-            else:
-                row[f] = float(val)
+        past_txns = [t for t in env.transactions if t.timestamp < txn_obj.timestamp]
+        acc_txns = [t for t in past_txns if t.account_id == txn_obj.account_id]
+        
+        if acc_txns:
+            account_time_since_last_txn = (txn_obj.timestamp - acc_txns[-1].timestamp).total_seconds()
+            is_new_account = 0.0
+        else:
+            account_time_since_last_txn = np.nan
+            is_new_account = 1.0
+            
+        acc_txns_24h = len([t for t in acc_txns if (txn_obj.timestamp - t.timestamp).total_seconds() <= 86400])
+        acc_txns_7d = len([t for t in acc_txns if (txn_obj.timestamp - t.timestamp).total_seconds() <= 7*86400])
+        
+        dev_txns = [t for t in past_txns if t.device_id == txn_obj.device_id]
+        device_txns_7d = len([t for t in dev_txns if (txn_obj.timestamp - t.timestamp).total_seconds() <= 7*86400])
+        
+        is_familiar_merchant = 1.0 if any(t.merchant_id == txn_obj.merchant_id for t in acc_txns) else 0.0
+        
+        row = {
+            'amount': float(txn_obj.amount),
+            'hour_of_day': float(txn_obj.timestamp.hour),
+            'day_of_week': float(txn_obj.timestamp.weekday()),
+            'account_time_since_last_txn': account_time_since_last_txn,
+            'is_new_account': is_new_account,
+            'account_txns_24h': float(acc_txns_24h),
+            'account_txns_7d': float(acc_txns_7d),
+            'device_txns_7d': float(device_txns_7d),
+            'is_familiar_merchant': is_familiar_merchant
+        }
         df = pd.DataFrame([row])
         shap_values = explainer.shap_values(df)
         if isinstance(shap_values, list):
@@ -76,10 +92,9 @@ def main():
         attack_start = start_time + timedelta(days=random.randint(1, 10))
         campaign = si_agent.execute_campaign(start_time=attack_start)
         c_dict = campaign.model_dump()
-        if i == 0:
-            txns = [t for t in env.transactions if t.campaign_id == campaign.campaign_id]
-            if txns:
-                c_dict['shap_explanation'] = get_shap(txns[-1])
+        txns = [t for t in env.transactions if t.campaign_id == campaign.campaign_id]
+        if txns:
+            c_dict['shap_explanation'] = get_shap(txns[-1])
         samples.append(c_dict)
 
     # Account Takeover
@@ -93,10 +108,9 @@ def main():
             attack_start = account.opened_at + timedelta(days=random.randint(2, 20))
             campaign = ato_agent.execute_campaign(start_time=attack_start, user=user, account=account, card=card)
             c_dict = campaign.model_dump()
-            if i == 0:
-                txns = [t for t in env.transactions if t.campaign_id == campaign.campaign_id]
-                if txns:
-                    c_dict['shap_explanation'] = get_shap(txns[-1])
+            txns = [t for t in env.transactions if t.campaign_id == campaign.campaign_id]
+            if txns:
+                c_dict['shap_explanation'] = get_shap(txns[-1])
             samples.append(c_dict)
             
     # GenAI Social Engineering
@@ -109,10 +123,9 @@ def main():
             attack_start = account.opened_at + timedelta(days=random.randint(2, 20))
             campaign = se_agent.execute_campaign(start_time=attack_start, user=user, account=account, card=card)
             c_dict = campaign.model_dump()
-            if i == 0:
-                txns = [t for t in env.transactions if t.campaign_id == campaign.campaign_id]
-                if txns:
-                    c_dict['shap_explanation'] = get_shap(txns[-1])
+            txns = [t for t in env.transactions if t.campaign_id == campaign.campaign_id]
+            if txns:
+                c_dict['shap_explanation'] = get_shap(txns[-1])
             samples.append(c_dict)
 
     out_path = "ml/data/campaign_samples.json"
