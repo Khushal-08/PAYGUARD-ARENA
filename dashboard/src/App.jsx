@@ -21,11 +21,15 @@ const metricFallback = {
 
 function normalizeMetrics(payload) {
   const source = payload?.data || payload?.summary || payload || {};
+  const baseline = source.baseline_ladder || source.baseline || source.configs;
+  const fprSource = source.fpr_comparison || source.fpr || source.fpr_tradeoff;
+  const adaptiveSource = source.adaptive_loop || source.adaptive || source.rounds;
+  const consistency = source.time_consistency || source.consistency || source.features;
   return {
-    baseline: source.baseline || source.baseline_ladder || source.configs || metricFallback.baseline,
-    fpr: source.fpr || source.fpr_tradeoff || metricFallback.fpr,
-    adaptive: source.adaptive || source.adaptive_loop || source.rounds || metricFallback.adaptive,
-    consistency: source.consistency || source.time_consistency || source.features || metricFallback.consistency,
+    baseline: Array.isArray(baseline) ? baseline.map((item, index) => ({ ...item, id: item.id || `config_${index + 1}`, name: item.name || item.config })) : metricFallback.baseline,
+    fpr: Array.isArray(fprSource) ? fprSource : fprSource ? Object.entries(fprSource).map(([round, item]) => ({ round, blocked: item.blocked ?? item.fp_count, total: item.total ?? item.total_legit, fpr: item.fpr })) : metricFallback.fpr,
+    adaptive: Array.isArray(adaptiveSource) ? adaptiveSource : adaptiveSource ? Object.entries(adaptiveSource).map(([round, item]) => ({ round: round.replace('_', ' ').replace(/^(.)/, m => m.toUpperCase()), detection: item.detection ?? item.detection_rate, bustOut: item.bustOut ?? item.avg_bust_out })) : metricFallback.adaptive,
+    consistency: Array.isArray(consistency) ? consistency.map(item => ({ feature: item.feature, status: item.status || (item.passed ? 'pass' : 'fail'), reason: item.reason })) : metricFallback.consistency,
   };
 }
 
