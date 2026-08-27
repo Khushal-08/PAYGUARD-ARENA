@@ -1,0 +1,606 @@
+[
+  {
+    "campaign_id": "6f8e2ced-3c50-4384-993c-871f0a125d3e",
+    "attack_type": "Synthetic Identity",
+    "phase": "completed",
+    "objective": "Build trust, then bust out",
+    "status": "Completed",
+    "round_id": 1,
+    "history": [
+      {
+        "timestamp": "2026-01-08T00:00:00",
+        "phase": "identity_creation",
+        "action": "create_user",
+        "parameters": {
+          "is_synthetic": true
+        }
+      },
+      {
+        "timestamp": "2026-01-08T07:00:00",
+        "phase": "account_opening",
+        "action": "open_account",
+        "parameters": {
+          "doc_type": "synthetic"
+        }
+      },
+      {
+        "timestamp": "2026-01-08T21:00:00",
+        "phase": "card_issuance",
+        "action": "issue_card",
+        "parameters": {
+          "type": "virtual"
+        }
+      },
+      {
+        "timestamp": "2026-01-10T21:00:00",
+        "phase": "normal_seeding",
+        "action": "generate_baseline_txns",
+        "parameters": {
+          "count": 2,
+          "avg_amount": 18.41
+        }
+      },
+      {
+        "timestamp": "2026-01-13T04:31:01.740263",
+        "phase": "gradual_drift",
+        "action": "increase_velocity_and_amount",
+        "parameters": {
+          "count": 2,
+          "avg_amount": 168.28
+        }
+      },
+      {
+        "timestamp": "2026-01-13T07:40:18.818792",
+        "phase": "fraud_attempt",
+        "action": "bust_out",
+        "parameters": {
+          "count": 4,
+          "avg_amount": 1652.42,
+          "timing_strategy": "random"
+        }
+      },
+      {
+        "timestamp": "2026-01-13T08:38:18.818792",
+        "phase": "completed",
+        "action": "campaign_end",
+        "parameters": {
+          "total_fraud_txns": 4
+        }
+      }
+    ],
+    "shap_explanation": [
+      [
+        "account_time_since_last_txn",
+        -6.012872695922852
+      ],
+      [
+        "amount",
+        2.856281280517578
+      ],
+      [
+        "device_txns_7d",
+        1.6956013441085815
+      ]
+    ]
+  },
+  {
+    "campaign_id": "f4e8d5c4-b758-40ae-b876-7bb0b0643f69",
+    "attack_type": "Synthetic Identity",
+    "phase": "completed",
+    "objective": "Build trust, then bust out",
+    "status": "Completed",
+    "round_id": 1,
+    "history": [
+      {
+        "timestamp": "2026-01-10T00:00:00",
+        "phase": "identity_creation",
+        "action": "create_user",
+        "parameters": {
+          "is_synthetic": true
+        }
+      },
+      {
+        "timestamp": "2026-01-10T18:00:00",
+        "phase": "account_opening",
+        "action": "open_account",
+        "parameters": {
+          "doc_type": "synthetic"
+        }
+      },
+      {
+        "timestamp": "2026-01-11T06:00:00",
+        "phase": "card_issuance",
+        "action": "issue_card",
+        "parameters": {
+          "type": "virtual"
+        }
+      },
+      {
+        "timestamp": "2026-01-14T06:00:00",
+        "phase": "normal_seeding",
+        "action": "generate_baseline_txns",
+        "parameters": {
+          "count": 26,
+          "avg_amount": 63.3
+        }
+      },
+      {
+        "timestamp": "2026-04-01T08:34:17.023749",
+        "phase": "gradual_drift",
+        "action": "increase_velocity_and_amount",
+        "parameters": {
+          "count": 5,
+          "avg_amount": 187.52
+        }
+      },
+      {
+        "timestamp": "2026-04-04T04:17:09.230872",
+        "phase": "fraud_attempt",
+        "action": "bust_out",
+        "parameters": {
+          "count": 2,
+          "avg_amount": 2090.58,
+          "timing_strategy": "off_peak"
+        }
+      },
+      {
+        "timestamp": "2026-04-04T04:50:09.230872",
+        "phase": "completed",
+        "action": "campaign_end",
+        "parameters": {
+          "total_fraud_txns": 2
+        }
+      }
+    ]
+  },
+  {
+    "campaign_id": "b0acc2b9-8aaf-4adf-8fdb-07379c9e19ee",
+    "attack_type": "Synthetic Identity",
+    "phase": "completed",
+    "objective": "Build trust, then bust out",
+    "status": "Completed",
+    "round_id": 1,
+    "history": [
+      {
+        "timestamp": "2026-01-05T00:00:00",
+        "phase": "identity_creation",
+        "action": "create_user",
+        "parameters": {
+          "is_synthetic": true
+        }
+      },
+      {
+        "timestamp": "2026-01-05T09:00:00",
+        "phase": "account_opening",
+        "action": "open_account",
+        "parameters": {
+          "doc_type": "synthetic"
+        }
+      },
+      {
+        "timestamp": "2026-01-06T03:00:00",
+        "phase": "card_issuance",
+        "action": "issue_card",
+        "parameters": {
+          "type": "virtual"
+        }
+      },
+      {
+        "timestamp": "2026-01-07T03:00:00",
+        "phase": "normal_seeding",
+        "action": "generate_baseline_txns",
+        "parameters": {
+          "count": 13,
+          "avg_amount": 36.31
+        }
+      },
+      {
+        "timestamp": "2026-02-09T05:00:31.893903",
+        "phase": "gradual_drift",
+        "action": "increase_velocity_and_amount",
+        "parameters": {
+          "count": 4,
+          "avg_amount": 239.05
+        }
+      },
+      {
+        "timestamp": "2026-02-09T23:23:52.347129",
+        "phase": "fraud_attempt",
+        "action": "bust_out",
+        "parameters": {
+          "count": 4,
+          "avg_amount": 1086.37,
+          "timing_strategy": "random"
+        }
+      },
+      {
+        "timestamp": "2026-02-10T00:33:52.347129",
+        "phase": "completed",
+        "action": "campaign_end",
+        "parameters": {
+          "total_fraud_txns": 4
+        }
+      }
+    ]
+  },
+  {
+    "campaign_id": "07f939dc-1f5e-4a8c-bb55-ca90fd0bfdfd",
+    "attack_type": "Account Takeover",
+    "phase": "completed",
+    "objective": "Hijack account and cash out",
+    "status": "Completed",
+    "round_id": 1,
+    "history": [
+      {
+        "timestamp": "2026-02-08T22:42:18.327972",
+        "phase": "baseline_established",
+        "action": "observe_baseline",
+        "parameters": {
+          "user_id": "3fa983c8-169e-4618-863b-7e365f1a2b3b"
+        }
+      },
+      {
+        "timestamp": "2026-02-10T16:42:18.327972",
+        "phase": "compromise_event",
+        "action": "new_device_login",
+        "parameters": {
+          "method": "credential_stuffing"
+        }
+      },
+      {
+        "timestamp": "2026-02-10T17:34:18.327972",
+        "phase": "behavior_shift",
+        "action": "probe_account",
+        "parameters": {
+          "count": 1,
+          "avg_amount": 5.28
+        }
+      },
+      {
+        "timestamp": "2026-02-10T18:22:35.431392",
+        "phase": "cash_out",
+        "action": "drain_funds",
+        "parameters": {
+          "count": 6,
+          "avg_amount": 2317.47,
+          "timing_strategy": "immediate"
+        }
+      },
+      {
+        "timestamp": "2026-02-10T18:54:35.431392",
+        "phase": "completed",
+        "action": "campaign_end",
+        "parameters": {
+          "total_fraud_txns": 7
+        }
+      }
+    ],
+    "shap_explanation": [
+      [
+        "account_time_since_last_txn",
+        -6.027276039123535
+      ],
+      [
+        "amount",
+        2.9753923416137695
+      ],
+      [
+        "device_txns_7d",
+        1.6956013441085815
+      ]
+    ]
+  },
+  {
+    "campaign_id": "d26ff0d4-4c09-4d34-9a41-fbdfb797f500",
+    "attack_type": "Account Takeover",
+    "phase": "completed",
+    "objective": "Hijack account and cash out",
+    "status": "Completed",
+    "round_id": 1,
+    "history": [
+      {
+        "timestamp": "2026-03-12T16:39:03.993244",
+        "phase": "baseline_established",
+        "action": "observe_baseline",
+        "parameters": {
+          "user_id": "98e1a118-2ed5-4462-bdd7-04f8dd0c96bc"
+        }
+      },
+      {
+        "timestamp": "2026-03-13T11:39:03.993244",
+        "phase": "compromise_event",
+        "action": "new_device_login",
+        "parameters": {
+          "method": "credential_stuffing"
+        }
+      },
+      {
+        "timestamp": "2026-03-13T23:39:03.993244",
+        "phase": "behavior_shift",
+        "action": "probe_account",
+        "parameters": {
+          "count": 2,
+          "avg_amount": 8.93
+        }
+      },
+      {
+        "timestamp": "2026-03-14T01:29:31.760867",
+        "phase": "cash_out",
+        "action": "drain_funds",
+        "parameters": {
+          "count": 2,
+          "avg_amount": 2200.65,
+          "timing_strategy": "wait_for_night"
+        }
+      },
+      {
+        "timestamp": "2026-03-14T01:43:31.760867",
+        "phase": "completed",
+        "action": "campaign_end",
+        "parameters": {
+          "total_fraud_txns": 4
+        }
+      }
+    ]
+  },
+  {
+    "campaign_id": "53e5403b-aa78-4fa2-9d5c-fe85e80e5889",
+    "attack_type": "Account Takeover",
+    "phase": "completed",
+    "objective": "Hijack account and cash out",
+    "status": "Completed",
+    "round_id": 1,
+    "history": [
+      {
+        "timestamp": "2026-03-16T20:09:35.312184",
+        "phase": "baseline_established",
+        "action": "observe_baseline",
+        "parameters": {
+          "user_id": "68505d8f-9be3-4ae9-a82f-f9a08a70b45d"
+        }
+      },
+      {
+        "timestamp": "2026-03-17T07:09:35.312184",
+        "phase": "compromise_event",
+        "action": "new_device_login",
+        "parameters": {
+          "method": "credential_stuffing"
+        }
+      },
+      {
+        "timestamp": "2026-03-17T15:09:35.312184",
+        "phase": "behavior_shift",
+        "action": "probe_account",
+        "parameters": {
+          "count": 1,
+          "avg_amount": 5.35
+        }
+      },
+      {
+        "timestamp": "2026-03-17T16:31:56.257424",
+        "phase": "cash_out",
+        "action": "drain_funds",
+        "parameters": {
+          "count": 6,
+          "avg_amount": 2833.81,
+          "timing_strategy": "wait_for_night"
+        }
+      },
+      {
+        "timestamp": "2026-03-17T17:08:56.257424",
+        "phase": "completed",
+        "action": "campaign_end",
+        "parameters": {
+          "total_fraud_txns": 7
+        }
+      }
+    ]
+  },
+  {
+    "campaign_id": "04ad3c36-e191-4e89-9e14-8ddeb90b6461",
+    "attack_type": "GenAI Social Engineering",
+    "phase": "completed",
+    "objective": "Persuade victim to authorize out-of-pattern payment",
+    "status": "Completed",
+    "round_id": 1,
+    "history": [
+      {
+        "timestamp": "2026-01-06T00:00:00",
+        "phase": "victim_profiling",
+        "action": "extract_profile",
+        "parameters": {
+          "age_days": 29,
+          "avg_spend": 56.774166666666666,
+          "max_spend": 165.23,
+          "top_merchants": [
+            "grocery",
+            "retail"
+          ],
+          "active_hours": "22:00 - 2:00"
+        }
+      },
+      {
+        "timestamp": "2026-01-06T00:10:00",
+        "phase": "scenario_generation",
+        "action": "query_heuristics",
+        "parameters": {
+          "target": "generate_persuasive_scenario"
+        }
+      },
+      {
+        "timestamp": "2026-01-06T00:10:00",
+        "phase": "scenario_generation",
+        "action": "scenario_created",
+        "parameters": {
+          "target_merchant_category": "grocery",
+          "timing_rationale": "Targets victim typical active window (22:00 - 2:00)",
+          "urgency_angle": "account block threat",
+          "persuasiveness_score": 10,
+          "target_amount": 168.66
+        }
+      },
+      {
+        "timestamp": "2026-01-06T00:35:00",
+        "phase": "victim_decision",
+        "action": "simulate_decision",
+        "parameters": {
+          "success_probability": 1.0,
+          "authorized": true
+        }
+      },
+      {
+        "timestamp": "2026-01-06T00:42:00",
+        "phase": "authorization",
+        "action": "payment_authorized",
+        "parameters": {
+          "amount": 168.66497878639984
+        }
+      },
+      {
+        "timestamp": "2026-01-06T00:42:00",
+        "phase": "completed",
+        "action": "campaign_end",
+        "parameters": {
+          "result": "payment_successful",
+          "amount": 168.66497878639984
+        }
+      }
+    ],
+    "shap_explanation": [
+      [
+        "account_time_since_last_txn",
+        -2.6556670665740967
+      ],
+      [
+        "device_txns_7d",
+        2.144040584564209
+      ],
+      [
+        "amount",
+        -1.9248067140579224
+      ]
+    ]
+  },
+  {
+    "campaign_id": "08e70897-4a2f-4b9a-903a-0fbe449f4454",
+    "attack_type": "GenAI Social Engineering",
+    "phase": "completed",
+    "objective": "Persuade victim to authorize out-of-pattern payment",
+    "status": "Failed",
+    "round_id": 1,
+    "history": [
+      {
+        "timestamp": "2026-03-06T16:14:36.622972",
+        "phase": "victim_profiling",
+        "action": "extract_profile",
+        "parameters": {
+          "age_days": 185,
+          "avg_spend": 50.0,
+          "max_spend": 100.0,
+          "top_merchants": [
+            "Unknown"
+          ],
+          "active_hours": "Unknown"
+        }
+      },
+      {
+        "timestamp": "2026-03-06T16:37:36.622972",
+        "phase": "scenario_generation",
+        "action": "query_heuristics",
+        "parameters": {
+          "target": "generate_persuasive_scenario"
+        }
+      },
+      {
+        "timestamp": "2026-03-06T16:37:36.622972",
+        "phase": "scenario_generation",
+        "action": "scenario_created",
+        "parameters": {
+          "target_merchant_category": "Unknown",
+          "timing_rationale": "Targets victim typical active window (Unknown)",
+          "urgency_angle": "reward/refund claim",
+          "persuasiveness_score": 4,
+          "target_amount": 139.23
+        }
+      },
+      {
+        "timestamp": "2026-03-06T17:10:36.622972",
+        "phase": "victim_decision",
+        "action": "simulate_decision",
+        "parameters": {
+          "success_probability": 0.4,
+          "authorized": false
+        }
+      },
+      {
+        "timestamp": "2026-03-06T17:10:36.622972",
+        "phase": "completed",
+        "action": "campaign_end",
+        "parameters": {
+          "result": "victim_rejected_scam"
+        }
+      }
+    ]
+  },
+  {
+    "campaign_id": "9a2557da-3ca6-4475-b4f1-36c0c4f551d9",
+    "attack_type": "GenAI Social Engineering",
+    "phase": "completed",
+    "objective": "Persuade victim to authorize out-of-pattern payment",
+    "status": "Failed",
+    "round_id": 1,
+    "history": [
+      {
+        "timestamp": "2026-03-26T16:34:32.791957",
+        "phase": "victim_profiling",
+        "action": "extract_profile",
+        "parameters": {
+          "age_days": 159,
+          "avg_spend": 50.0,
+          "max_spend": 100.0,
+          "top_merchants": [
+            "Unknown"
+          ],
+          "active_hours": "Unknown"
+        }
+      },
+      {
+        "timestamp": "2026-03-26T16:53:32.791957",
+        "phase": "scenario_generation",
+        "action": "query_heuristics",
+        "parameters": {
+          "target": "generate_persuasive_scenario"
+        }
+      },
+      {
+        "timestamp": "2026-03-26T16:53:32.791957",
+        "phase": "scenario_generation",
+        "action": "scenario_created",
+        "parameters": {
+          "target_merchant_category": "Unknown",
+          "timing_rationale": "Targets victim typical active window (Unknown)",
+          "urgency_angle": "delivery/payment confirmation",
+          "persuasiveness_score": 5,
+          "target_amount": 160.81
+        }
+      },
+      {
+        "timestamp": "2026-03-26T17:35:32.791957",
+        "phase": "victim_decision",
+        "action": "simulate_decision",
+        "parameters": {
+          "success_probability": 0.5,
+          "authorized": false
+        }
+      },
+      {
+        "timestamp": "2026-03-26T17:35:32.791957",
+        "phase": "completed",
+        "action": "campaign_end",
+        "parameters": {
+          "result": "victim_rejected_scam"
+        }
+      }
+    ]
+  }
+]

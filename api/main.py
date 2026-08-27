@@ -165,6 +165,29 @@ async def adapt_attack(req: AdaptAttackRequest):
 async def adapt_defense(req: AdaptDefenseRequest):
     return {"new_model_version_id": "xgboost_baseline_round_2"}
 
+@app.get("/agents/campaigns")
+async def get_agents_campaigns():
+    samples_path = os.path.join(os.path.dirname(__file__), "..", "ml", "data", "campaign_samples.json")
+    try:
+        with open(samples_path, "r") as f:
+            samples = json.load(f)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="campaign_samples.json not found")
+        
+    si_campaigns = [c for c in samples if c.get("attack_type") == "Synthetic Identity"]
+    ato_campaigns = [c for c in samples if c.get("attack_type") == "Account Takeover"]
+    genai_campaigns = [c for c in samples if c.get("attack_type") == "GenAI Social Engineering"]
+    
+    cache = get_demo_cache()
+    llm_reasoning = cache.get("llm_reasoning", "LLM reasoning unavailable.")
+    
+    return {
+        "synthetic_identity": si_campaigns,
+        "account_takeover": ato_campaigns,
+        "genai_social_engineering": genai_campaigns,
+        "round_2_llm_reasoning": llm_reasoning
+    }
+
 @app.get("/arena/round/{n}")
 async def get_arena_round(n: int):
     cache = get_demo_cache()
