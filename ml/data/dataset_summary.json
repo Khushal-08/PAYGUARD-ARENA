@@ -1,0 +1,10 @@
+{
+  "total_transaction_count": 224068,
+  "legit_count": 222952,
+  "fraud_count": 1116,
+  "date_range": {
+    "start": "2026-01-01 00:04:20.321445",
+    "end": "2026-06-01 09:13:22.955385"
+  },
+  "user_count": 4333
+}
