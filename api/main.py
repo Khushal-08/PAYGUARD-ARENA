@@ -291,3 +291,37 @@ async def get_metrics_summary():
     if time_consistency_error: payload["time_consistency_error"] = time_consistency_error
     
     return payload
+
+@app.get("/system/status")
+async def get_system_status():
+    base_dir = os.path.join(os.path.dirname(__file__), "..")
+    
+    # Check gemini connection status
+    gemini_status = "connected" if os.environ.get("GEMINI_API_KEY") else "disconnected"
+    
+    # Calculate transaction count
+    txn_count = 0
+    txn_csv = os.path.join(base_dir, "ml", "data", "simulated_baseline.csv")
+    if os.path.exists(txn_csv):
+        with open(txn_csv, "r", encoding="utf-8") as f:
+            txn_count = sum(1 for _ in f) - 1 # Subtract header
+            
+    # Calculate campaign counts
+    campaign_counts = {}
+    campaigns_json = os.path.join(base_dir, "ml", "data", "campaign_samples.json")
+    if os.path.exists(campaigns_json):
+        with open(campaigns_json, "r") as f:
+            campaigns = json.load(f)
+            for c in campaigns:
+                attack_type = c.get("attack_type", "Unknown")
+                campaign_counts[attack_type] = campaign_counts.get(attack_type, 0) + 1
+                
+    return {
+        "active_model_version": "round_1",
+        "decision_threshold": 0.5,
+        "gemini_connection_status": gemini_status,
+        "real_dataset_counts": {
+            "total_transactions": max(0, txn_count),
+            "campaign_counts_per_attack_type": campaign_counts
+        }
+    }
