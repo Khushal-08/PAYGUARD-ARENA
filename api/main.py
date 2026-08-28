@@ -299,12 +299,13 @@ async def get_system_status():
     # Check gemini connection status
     gemini_status = "connected" if os.environ.get("GEMINI_API_KEY") else "disconnected"
     
-    # Calculate transaction count
+    # Load transaction count from summary
     txn_count = 0
-    txn_csv = os.path.join(base_dir, "ml", "data", "simulated_baseline.csv")
-    if os.path.exists(txn_csv):
-        with open(txn_csv, "r", encoding="utf-8") as f:
-            txn_count = sum(1 for _ in f) - 1 # Subtract header
+    summary_json = os.path.join(base_dir, "ml", "data", "dataset_summary.json")
+    if os.path.exists(summary_json):
+        with open(summary_json, "r") as f:
+            summary = json.load(f)
+            txn_count = summary.get("total_transaction_count", 0)
             
     # Calculate campaign counts
     campaign_counts = {}
