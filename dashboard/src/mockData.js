@@ -1,3 +1,4 @@
+// TEMPORARY_MOCK_DATA: mirrors the trimmed demo payload for UI development only. Replace with GET /arena/round/{n} from FastAPI (SPEC.md §13).
 export const demoData = {
   "round_1_detection_rate": 0.989010989010989,
   "round_1_caught": 90,
@@ -9,11 +10,9 @@ export const demoData = {
   "shap_explanation": [
     ["amount", 6.2212],
     ["account_time_since_last_txn", 0.9138],
-    ["hour_of_day", 0.4545],
-    ["is_familiar_merchant", 0.3201],
-    ["device_txns_7d", 0.1504]
+    ["hour_of_day", 0.4545]
   ],
-  "llm_reasoning": "The high SHAP score for 'amount' required drastically reducing fraud_avg_amt_loc to the 3x minimum threshold while raising baseline spending. To evade 'account_time_since_last_txn' detection, we increased seeding count and reduced delays. Adopting a 'blend_peak' timing strategy neutralizes 'hour_of_day' signals.",
+  "llm_reasoning": "The high SHAP score for 'amount' required drastically reducing fraud_avg_amt_loc to the 3x minimum threshold of 750 while raising baseline spending, minimizing the anomaly gap. To evade 'account_time_since_last_txn' detection, we increased seeding count and reduced delays to establish a continuous, legitimate-looking transaction cadence. Lastly, adopting a 'blend_peak' timing strategy neutralizes 'hour_of_day' signals by embedding fraudulent activity within normal high-volume traffic hours.",
   "mutated_params": {
     "seeding_count_loc": 20,
     "seeding_delay_loc": 18,

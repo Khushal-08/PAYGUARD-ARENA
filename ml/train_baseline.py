@@ -1,4 +1,5 @@
 import os
+import json
 import pandas as pd
 import numpy as np
 import xgboost as xgb
@@ -25,6 +26,9 @@ def split_chronological(df: pd.DataFrame):
     return train, val, test
 
 def main():
+    import random
+    random.seed(42)
+    np.random.seed(42)
     print("Loading simulated baseline data...")
     df = pd.read_csv("ml/data/simulated_baseline.csv")
     df['timestamp'] = pd.to_datetime(df['timestamp'])
@@ -132,6 +136,19 @@ def main():
     with open(model_path, "wb") as f:
         pickle.dump(model_c3, f)
     print(f"\nSaved Config 3 model to {model_path}")
+    
+    # Dump results to JSON
+    json_results = []
+    for name, metrics in results.items():
+        json_results.append({
+            "config": name,
+            "auc": metrics['AUC'],
+            "pr_auc": metrics['PR_AUC']
+        })
+    json_path = "ml/data/baseline_results.json"
+    with open(json_path, "w") as f:
+        json.dump(json_results, f, indent=2)
+    print(f"Saved baseline results to {json_path}")
 
 if __name__ == "__main__":
     main()

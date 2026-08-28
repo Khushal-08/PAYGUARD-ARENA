@@ -1,0 +1,30 @@
+[
+  {
+    "feature":"amount",
+    "train_auc":0.9991268933,
+    "val_auc":0.9990055747,
+    "is_time_consistent":true,
+    "reason":"Stable"
+  },
+  {
+    "feature":"account_time_since_last_txn",
+    "train_auc":0.8654940596,
+    "val_auc":0.8400622052,
+    "is_time_consistent":true,
+    "reason":"Stable"
+  },
+  {
+    "feature":"account_txns_24h",
+    "train_auc":0.7082286018,
+    "val_auc":0.6867700048,
+    "is_time_consistent":true,
+    "reason":"Stable"
+  },
+  {
+    "feature":"device_txns_7d",
+    "train_auc":0.739469834,
+    "val_auc":0.7363766687,
+    "is_time_consistent":true,
+    "reason":"Stable"
+  }
+]

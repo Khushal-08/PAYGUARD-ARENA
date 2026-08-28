@@ -1,0 +1,43 @@
+{
+  "round_1_detection_rate": 0.989010989010989,
+  "round_1_caught": 90,
+  "round_1_total": 91,
+  "round_1_avg_amt": 1507.8034339622643,
+  "round_0_model_fpr": 0.004309965696191398,
+  "round_0_model_fp_count": 196,
+  "round_0_model_total_legit": 45476,
+  "shap_explanation": [
+    [
+      "amount",
+      6.221258163452148
+    ],
+    [
+      "account_time_since_last_txn",
+      0.9138880968093872
+    ],
+    [
+      "hour_of_day",
+      0.45457106828689575
+    ]
+  ],
+  "llm_reasoning": "The high SHAP score for 'amount' required drastically reducing fraud_avg_amt_loc to the 3x minimum threshold of 750 while raising baseline spending, minimizing the anomaly gap. To evade 'account_time_since_last_txn' detection, we increased seeding count and reduced delays to establish a continuous, legitimate-looking transaction cadence. Lastly, adopting a 'blend_peak' timing strategy neutralizes 'hour_of_day' signals by embedding fraudulent activity within normal high-volume traffic hours.",
+  "mutated_params": {
+    "seeding_count_loc": 20,
+    "seeding_delay_loc": 18,
+    "drift_avg_amt_loc": 250,
+    "drift_delay_loc": 4,
+    "fraud_avg_amt_loc": 750,
+    "timing_strategy": "blend_peak"
+  },
+  "round_2_detection_rate": 0.9275,
+  "round_2_caught": 371,
+  "round_2_total": 400,
+  "round_2_avg_amt": 740.4671652816251,
+  "round_3_detection_rate": 0.9875,
+  "round_3_caught": 79,
+  "round_3_total": 80,
+  "round_3_avg_amt": 752.7176339285714,
+  "round_1_model_fpr": 0.00864192101328173,
+  "round_1_model_fp_count": 393,
+  "round_1_model_total_legit": 45476
+}

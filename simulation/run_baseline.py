@@ -9,6 +9,9 @@ from simulation.attacks.synthetic_identity import SyntheticIdentityAgent
 from simulation.attacks.account_takeover import AccountTakeoverAgent
 
 def main():
+    import numpy as np
+    random.seed(42)
+    np.random.seed(42)
     print("Initializing Payment World State Model...")
     start_time = datetime(2026, 1, 1, 0, 0, 0)
     env = PaymentEnvironment(start_time=start_time)
@@ -33,21 +36,21 @@ def main():
         campaign = attack_agent.execute_campaign(start_time=attack_start)
         campaigns.append(campaign)
         
-    print("Injecting Account Takeover attacks...")
-    ato_agent = AccountTakeoverAgent(env=env, round_id=1)
+    # print("Injecting Account Takeover attacks...")
+    # ato_agent = AccountTakeoverAgent(env=env, round_id=1)
     
-    # Select legitimate users who actually have an account and card
-    valid_users = [u for u in env.users.values() if not u.is_synthetic]
-    for _ in range(num_attacks):
-        user = random.choice(valid_users)
-        account = next((a for a in env.accounts.values() if a.user_id == user.user_id), None)
-        card = next((c for c in env.cards.values() if c.account_id == account.account_id), None) if account else None
+    # # Select legitimate users who actually have an account and card
+    # valid_users = [u for u in env.users.values() if not u.is_synthetic]
+    # for _ in range(num_attacks):
+    #     user = random.choice(valid_users)
+    #     account = next((a for a in env.accounts.values() if a.user_id == user.user_id), None)
+    #     card = next((c for c in env.cards.values() if c.account_id == account.account_id), None) if account else None
         
-        if account and card:
-            # Random time after their account opened
-            attack_start = account.opened_at + timedelta(days=random.randint(10, 60), hours=random.randint(0, 23))
-            campaign = ato_agent.execute_campaign(start_time=attack_start, user=user, account=account, card=card)
-            campaigns.append(campaign)
+    #     if account and card:
+    #         # Random time after their account opened
+    #         attack_start = account.opened_at + timedelta(days=random.randint(10, 60), hours=random.randint(0, 23))
+    #         campaign = ato_agent.execute_campaign(start_time=attack_start, user=user, account=account, card=card)
+    #         campaigns.append(campaign)
         
     print(f"Generated {len(env.transactions)} total transactions (including attacks).")
     

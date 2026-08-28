@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import sys
 import os
+import json
 
 # Ensure we can import from ml
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
@@ -31,6 +32,11 @@ def run_tests():
     print("\n--- Running Time Consistency Check ---")
     consistency_res = check_time_consistency(df, target_col='is_fraud', feature_cols=feature_cols)
     print(consistency_res.to_string())
+
+    # Dump to JSON
+    consistency_json_path = "ml/data/plumbing_time_consistency.json"
+    consistency_res.to_json(consistency_json_path, orient='records', indent=2)
+    print(f"Saved plumbing time consistency results to {consistency_json_path}")
 
     print("\n--- Running Multi-Split Robustness Check ---")
     robustness_res = evaluate_robustness_across_splits(df, target_col='is_fraud', feature_cols=feature_cols)

@@ -1,0 +1,70 @@
+{
+  "campaign_id": "9f7ae70a-26a7-439d-a0fe-3228f974d969",
+  "attack_type": "Synthetic Identity",
+  "phase": "completed",
+  "objective": "Build trust, then bust out",
+  "status": "Completed",
+  "round_id": 1,
+  "history": [
+    {
+      "timestamp": "2026-01-08T06:00:00",
+      "phase": "identity_creation",
+      "action": "create_user",
+      "parameters": {
+        "is_synthetic": true
+      }
+    },
+    {
+      "timestamp": "2026-01-08T19:00:00",
+      "phase": "account_opening",
+      "action": "open_account",
+      "parameters": {
+        "doc_type": "synthetic"
+      }
+    },
+    {
+      "timestamp": "2026-01-09T19:00:00",
+      "phase": "card_issuance",
+      "action": "issue_card",
+      "parameters": {
+        "type": "virtual"
+      }
+    },
+    {
+      "timestamp": "2026-01-11T19:00:00",
+      "phase": "normal_seeding",
+      "action": "generate_baseline_txns",
+      "parameters": {
+        "count": 3,
+        "avg_amount": 66.05
+      }
+    },
+    {
+      "timestamp": "2026-01-13T13:20:07.854499",
+      "phase": "gradual_drift",
+      "action": "increase_velocity_and_amount",
+      "parameters": {
+        "count": 1,
+        "avg_amount": 311.65
+      }
+    },
+    {
+      "timestamp": "2026-01-14T06:38:53.178592",
+      "phase": "fraud_attempt",
+      "action": "bust_out",
+      "parameters": {
+        "count": 4,
+        "avg_amount": 2098.31,
+        "timing_strategy": "random"
+      }
+    },
+    {
+      "timestamp": "2026-01-14T07:29:53.178592",
+      "phase": "completed",
+      "action": "campaign_end",
+      "parameters": {
+        "total_fraud_txns": 4
+      }
+    }
+  ]
+}
