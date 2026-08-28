@@ -64,6 +64,15 @@ async def health_check():
     """Cheap, deterministic health check for uptime monitoring."""
     return {"status": "ok", "version": "1.0"}
 
+@app.get("/metrics/fidelity")
+async def get_fidelity_metrics():
+    """Return precomputed attack fidelity metrics."""
+    fidelity_json = os.path.join(os.path.dirname(__file__), "..", "ml", "data", "fidelity_results.json")
+    if os.path.exists(fidelity_json):
+        with open(fidelity_json, "r") as f:
+            return json.load(f)
+    return {"error": "Fidelity data not found. Please run precompute_fidelity()."}
+
 
 @app.post("/simulate/campaign")
 async def simulate_campaign(req: CampaignRequest):

@@ -1,0 +1,50 @@
+{
+    "metadata": {
+        "reference_dataset": "IEEE-CIS",
+        "reference_usage": "external distribution comparison only",
+        "training_usage": false,
+        "sample_seed": 42,
+        "sample_size": 50000,
+        "generated_at": "2026-08-28T08:31:46.263050Z",
+        "method": "KS",
+        "interpretation": "A KS statistic measures the maximum difference between two empirical distributions. Smaller values indicate greater distributional similarity. Lower KS indicates greater distributional similarity for this feature."
+    },
+    "results": [
+        {
+            "attack_type": "Legitimate Baseline",
+            "comparison": "synthetic legitimate vs IEEE-CIS legitimate",
+            "feature": "transaction_amount",
+            "metric": "ks_statistic",
+            "value": 0.375163813569104,
+            "reference_sample_size": 48243,
+            "synthetic_sample_size": 222952
+        },
+        {
+            "attack_type": "Legitimate Baseline",
+            "comparison": "synthetic legitimate vs IEEE-CIS legitimate",
+            "feature": "transaction_hour",
+            "metric": "ks_statistic",
+            "value": 0.17596648527509212,
+            "reference_sample_size": 48243,
+            "synthetic_sample_size": 222952
+        },
+        {
+            "attack_type": "Synthetic Identity",
+            "comparison": "synthetic Synthetic Identity fraud vs IEEE-CIS fraud",
+            "feature": "transaction_amount",
+            "metric": "ks_statistic",
+            "value": 0.9094227289510672,
+            "reference_sample_size": 1757,
+            "synthetic_sample_size": 1116
+        },
+        {
+            "attack_type": "Synthetic Identity",
+            "comparison": "synthetic Synthetic Identity fraud vs IEEE-CIS fraud",
+            "feature": "transaction_hour",
+            "metric": "ks_statistic",
+            "value": 0.25486380132312536,
+            "reference_sample_size": 1757,
+            "synthetic_sample_size": 1116
+        }
+    ]
+}
