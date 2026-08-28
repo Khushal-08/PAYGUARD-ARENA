@@ -59,6 +59,12 @@ class AdaptAttackRequest(BaseModel):
 class AdaptDefenseRequest(BaseModel):
     retrain_trigger: bool
 
+@app.get("/health")
+async def health_check():
+    """Cheap, deterministic health check for uptime monitoring."""
+    return {"status": "ok", "version": "1.0"}
+
+
 @app.post("/simulate/campaign")
 async def simulate_campaign(req: CampaignRequest):
     env = PaymentEnvironment(start_time=datetime.utcnow())
