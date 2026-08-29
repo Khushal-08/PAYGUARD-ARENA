@@ -1,0 +1,46 @@
+                    PAYGUARD ARENA
+              ADAPTIVE PAYMENT DEFENSE
+
+        ┌─────────────────────────────────────┐
+        │             RED TEAM                │
+        │                                     │
+        │  Synthetic Identity                 │
+        │  Account Takeover                   │
+        │  GenAI Social Engineering           │
+        │  (Adaptive Gemini LLM Loop)         │
+        └──────────────────┬──────────────────┘
+                           │ 
+                           ▼ (Attack Generation)
+        ┌─────────────────────────────────────┐
+        │         PAYMENT ENVIRONMENT         │
+        │  (Merchants, Users, Legitimate Txns)│
+        └──────────────────┬──────────────────┘
+                           │ 
+                           ▼ (Live Transactions)
+        ┌─────────────────────────────────────┐
+        │             BLUE TEAM               │
+        │                                     │
+        │  Historical Feature Construction    │
+        │  XGBoost Inference (9 Features)     │
+        │  SHAP Contribution Ranking          │
+        └──────────────────┬──────────────────┘
+                           │ 
+        ┌──────────────────┴──────────────────┐
+        │         EVALUATION ARENA            │
+        │                                     │
+        │  Round 1: Baseline Defense Evaluated│
+        │  Round 2: Adaptive Attack Evasion   │
+        └──────────────────┬──────────────────┘
+                           │ 
+                           ▼ 
+        ┌─────────────────────────────────────┐
+        │     EXPLICIT DEFENSE RETRAINING     │
+        │  (Model Updated w/ Mutated Signals) │
+        └──────────────────┬──────────────────┘
+                           │ 
+                           ▼ 
+        ┌─────────────────────────────────────┐
+        │         FINAL EVALUATION            │
+        │  Round 3: Recovered Detection       │
+        │  (End-to-End Metrics & FPR Cost)    │
+        └─────────────────────────────────────┘
