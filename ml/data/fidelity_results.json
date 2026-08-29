@@ -4,47 +4,48 @@
         "reference_usage": "external distribution comparison only",
         "training_usage": false,
         "sample_seed": 42,
-        "sample_size": 50000,
-        "generated_at": "2026-08-28T08:31:46.263050Z",
-        "method": "KS",
-        "interpretation": "A KS statistic measures the maximum difference between two empirical distributions. Smaller values indicate greater distributional similarity. Lower KS indicates greater distributional similarity for this feature."
+        "generated_at": "2026-08-29T12:39:49.999946Z"
     },
     "results": [
         {
-            "attack_type": "Legitimate Baseline",
             "comparison": "synthetic legitimate vs IEEE-CIS legitimate",
             "feature": "transaction_amount",
             "metric": "ks_statistic",
             "value": 0.375163813569104,
-            "reference_sample_size": 48243,
-            "synthetic_sample_size": 222952
+            "interpretation": "KS=0.375 indicates meaningful divergence between synthetic and real amount distributions."
         },
         {
-            "attack_type": "Legitimate Baseline",
             "comparison": "synthetic legitimate vs IEEE-CIS legitimate",
-            "feature": "transaction_hour",
+            "feature": "hour_of_day",
             "metric": "ks_statistic",
             "value": 0.17596648527509212,
-            "reference_sample_size": 48243,
-            "synthetic_sample_size": 222952
+            "interpretation": "KS=0.176 indicates moderate match between synthetic and real hourly patterns."
         },
         {
-            "attack_type": "Synthetic Identity",
-            "comparison": "synthetic Synthetic Identity fraud vs IEEE-CIS fraud",
-            "feature": "transaction_amount",
-            "metric": "ks_statistic",
-            "value": 0.9094227289510672,
-            "reference_sample_size": 1757,
-            "synthetic_sample_size": 1116
+            "comparison": "synthetic legitimate vs IEEE-CIS legitimate",
+            "feature": "merchant_category",
+            "metric": "omitted",
+            "value": null,
+            "interpretation": "Omitted. Merchant-category fidelity isn't directly comparable between the two datasets due to differing taxonomies (our unique merchant IDs vs IEEE-CIS's coded ProductCD values)."
         },
         {
-            "attack_type": "Synthetic Identity",
-            "comparison": "synthetic Synthetic Identity fraud vs IEEE-CIS fraud",
-            "feature": "transaction_hour",
-            "metric": "ks_statistic",
-            "value": 0.25486380132312536,
-            "reference_sample_size": 1757,
-            "synthetic_sample_size": 1116
+            "comparison": "internal consistency",
+            "feature": "campaign_phase_duration_hours",
+            "metric": "average",
+            "value": 93.8845511057404
+        },
+        {
+            "comparison": "internal consistency",
+            "feature": "behavioral_drift_amount_multiplier",
+            "metric": "average_jump",
+            "value": 7.985385131715236
+        },
+        {
+            "comparison": "internal consistency",
+            "feature": "behavioral_drift_amount_multiplier",
+            "metric": "max_jump",
+            "value": 44.595,
+            "interpretation": "Ensures no unrealistic step-function jumps between seeding and drift"
         }
     ]
 }

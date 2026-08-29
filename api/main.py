@@ -292,11 +292,25 @@ async def get_metrics_summary():
     except Exception as e:
          time_consistency_error = f"Failed to parse time consistency JSONs: {str(e)}"
                     
+    # 5. Fidelity results
+    fidelity = None
+    fidelity_error = None
+    fidelity_json_path = os.path.join(base_dir, "ml", "data", "fidelity_results.json")
+    try:
+        if os.path.exists(fidelity_json_path):
+            with open(fidelity_json_path, 'r') as f:
+                fidelity = json.load(f)
+        else:
+            fidelity_error = "fidelity_results.json not found."
+    except Exception as e:
+        fidelity_error = f"Failed to parse fidelity JSON: {str(e)}"
+                    
     payload = {
         "baseline_ladder": baseline_ladder,
         "fpr_comparison": fpr_comparison,
         "adaptive_loop": adaptive_loop,
-        "time_consistency": time_consistency
+        "time_consistency": time_consistency,
+        "fidelity": fidelity
     }
     
     # Inject error fields if any
@@ -304,6 +318,7 @@ async def get_metrics_summary():
     if fpr_error: payload["fpr_error"] = fpr_error
     if adaptive_error: payload["adaptive_error"] = adaptive_error
     if time_consistency_error: payload["time_consistency_error"] = time_consistency_error
+    if fidelity_error: payload["fidelity_error"] = fidelity_error
     
     return payload
 
