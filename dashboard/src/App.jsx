@@ -38,18 +38,22 @@ const RETRY_INTERVAL_MS = 15000;
 async function fetchWithTimeout(url, signal) {
   const controller = new AbortController();
   const relayAbort = () => controller.abort();
+  let timeoutId;
   signal?.addEventListener('abort', relayAbort, { once: true });
   const request = fetch(url, { signal: controller.signal }).then(response => {
     if (!response.ok) throw new Error(`HTTP ${response.status} ${response.statusText}`);
     return response.json();
   });
-  const timeout = new Promise((_, reject) => window.setTimeout(() => {
-    controller.abort();
-    reject(new Error('Request timed out after 7 seconds'));
-  }, FETCH_TIMEOUT_MS));
+  const timeout = new Promise((_, reject) => {
+    timeoutId = window.setTimeout(() => {
+      controller.abort();
+      reject(new Error('Request timed out after 7 seconds'));
+    }, FETCH_TIMEOUT_MS);
+  });
   try {
     return await Promise.race([request, timeout]);
   } finally {
+    window.clearTimeout(timeoutId);
     signal?.removeEventListener('abort', relayAbort);
   }
 }
