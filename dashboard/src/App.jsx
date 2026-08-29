@@ -1,10 +1,18 @@
 import { useEffect, useMemo, useState } from 'react';
 import { demoData, mockTransactions } from './mockData';
 
-function fetchWithTimeout(url, options = {}, timeout = 5000) {
+function fetchWithTimeout(url, options = {}, timeout = 5000, retries = 1, delay = 1000) {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeout);
-  return fetch(url, { ...options, signal: controller.signal }).finally(() => clearTimeout(id));
+  return fetch(url, { ...options, signal: controller.signal })
+    .finally(() => clearTimeout(id))
+    .catch(error => {
+      if (retries > 0 && (!options.method || options.method === 'GET')) {
+        return new Promise(resolve => setTimeout(resolve, delay))
+          .then(() => fetchWithTimeout(url, options, timeout, retries - 1, delay));
+      }
+      throw error;
+    });
 }
 
 const metricFallback = {
